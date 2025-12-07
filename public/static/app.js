@@ -6,7 +6,7 @@ const translations = {
     hero_desc: '개발자, 전략적 투자자 조달 허브',
     type_investment: '투자',
     type_revenue: '수익분배',
-    type_startup: '창업',
+    type_startup: '창업희망',
     loading: '프로젝트를 불러오는 중...',
     no_projects: '등록된 프로젝트가 없습니다',
     footer_title: '프로젝트가 자본을 만나는 곳',
@@ -35,8 +35,10 @@ const translations = {
     error_save: '❌ 저장 오류: ',
     error_delete: '삭제 중 오류가 발생했습니다',
     select: '선택',
-    category_medical: '의료',
-    category_investment: '투자',
+    category_app: '앱',
+    category_web: '웹플랫폼',
+    category_o2o: 'O2O',
+    category_game: '게임',
     category_etc: '기타',
     click_to_play: '클릭하여 재생'
   },
@@ -75,8 +77,10 @@ const translations = {
     error_save: '❌ Save error: ',
     error_delete: 'Error occurred while deleting',
     select: 'Select',
-    category_medical: 'Medical',
-    category_investment: 'Investment',
+    category_app: 'App',
+    category_web: 'Web Platform',
+    category_o2o: 'O2O',
+    category_game: 'Game',
     category_etc: 'Other',
     click_to_play: 'Click to Play'
   },
@@ -86,7 +90,7 @@ const translations = {
     hero_desc: '开发者与战略投资者枢纽',
     type_investment: '投资',
     type_revenue: '收益分配',
-    type_startup: '创业',
+    type_startup: '创业希望',
     loading: '正在加载项目...',
     no_projects: '没有注册的项目',
     footer_title: '项目与资本相遇之地',
@@ -115,8 +119,10 @@ const translations = {
     error_save: '❌ 保存错误：',
     error_delete: '删除时发生错误',
     select: '选择',
-    category_medical: '医疗',
-    category_investment: '投资',
+    category_app: '应用',
+    category_web: '网络平台',
+    category_o2o: 'O2O',
+    category_game: '游戏',
     category_etc: '其他',
     click_to_play: '点击播放'
   }
@@ -156,11 +162,29 @@ function t(key) {
 
 function translateFundingType(type) {
   const fundingMap = {
-    'investment': { 'ko': '투자', 'en': 'Investment', 'zh': '投资' },
-    'donation': { 'ko': '수익분배', 'en': 'Revenue Share', 'zh': '收益分配' }
+    'investment': {
+      'ko': '투자',
+      'en': 'Investment',
+      'zh': '投资'
+    },
+    'donation': {
+      'ko': '수익분배',
+      'en': 'Revenue Share',
+      'zh': '收益分配'
+    },
+    'startup': {
+      'ko': '창업희망',
+      'en': 'Startup',
+      'zh': '创业希望'
+    }
   };
   
-  // Find matching type
+  // If type is one of the key values (investment, donation, startup)
+  if (fundingMap[type]) {
+    return fundingMap[type][currentLang];
+  }
+  
+  // If type is already translated, find the key and translate again
   for (const key of Object.keys(fundingMap)) {
     const values = Object.values(fundingMap[key]);
     if (values.includes(type)) {
@@ -173,9 +197,9 @@ function translateFundingType(type) {
 
 function translateCategory(category) {
   const categoryMap = {
-    'ko': { '의료': '의료', '투자': '투자', '기타': '기타' },
-    'en': { '의료': 'Medical', '투자': 'Investment', '기타': 'Other' },
-    'zh': { '의료': '医疗', '투자': '投资', '기타': '其他' }
+    'ko': { '선택': '선택', '웹플랫폼': '웹플랫폼', 'O2O': 'O2O', '게임': '게임', '기타': '기타' },
+    'en': { '선택': 'Select', '웹플랫폼': 'Web Platform', 'O2O': 'O2O', '게임': 'Game', '기타': 'Other' },
+    'zh': { '선택': '选择', '웹플랫폼': '网络平台', 'O2O': 'O2O', '게임': '游戏', '기타': '其他' }
   };
   
   for (const ko of Object.keys(categoryMap['ko'])) {
@@ -227,44 +251,49 @@ async function loadProjects() {
     }
 
     container.innerHTML = projects.map(project => {
+      // Count YouTube videos
+      const youtubeUrls = [
+        project.youtube_url_1,
+        project.youtube_url_2,
+        project.youtube_url_3,
+        project.youtube_url_4,
+        project.youtube_url_5
+      ].filter(url => url && url.trim());
+      
+      const videoCount = youtubeUrls.length;
       const title = getTranslatedField(project, 'title');
       const description = getTranslatedField(project, 'description');
-      const category = translateCategory(project.category || '기타');
-      const fundingType = project.funding_type || 'investment';
+      const categoryRaw = project.category || '기타';
+      const category = translateCategory(categoryRaw);
+      const fundingType = translateFundingType(project.funding_type);
       
-      // Determine badge class and text based on funding type and language
+      // Determine badge class based on funding type
       let badgeClass = 'badge-investment';
-      let badgeIcon = '🔻';
-      let badgeText = '';
-      
-      if (fundingType === 'investment' || fundingType.includes('투자') || fundingType.includes('Investment')) {
-        if (currentLang === 'ko') {
-          badgeClass = 'badge-investment';
-          badgeText = '투자';
-        } else if (currentLang === 'en') {
-          badgeClass = 'badge-orange';
-          badgeText = 'Investment';
-        } else {
-          badgeClass = 'badge-orange';
-          badgeText = t('type_investment');
-        }
-      } else if (fundingType === 'donation' || fundingType.includes('수익') || fundingType.includes('Revenue')) {
+      if (project.funding_type === 'investment') {
+        badgeClass = 'badge-investment';
+      } else if (project.funding_type === 'donation') {
         badgeClass = 'badge-donation';
-        badgeText = t('type_revenue');
+      } else if (project.funding_type === 'startup') {
+        badgeClass = 'badge-startup';
       }
       
       return `
-      <div class="project-card" onclick="showProjectDetail('${project.id}')">
-        <div class="project-card-header">
-          <span class="category-label">${category}</span>
-        </div>
-        <div class="project-card-body">
-          <h3 class="project-title">${title}</h3>
-          <p class="project-description">${description || ''}</p>
-        </div>
-        <div class="project-card-footer">
-          <span class="badge ${badgeClass}">${badgeIcon} ${badgeText}</span>
-          <span class="amount-badge">$ ${(project.amount || 0).toLocaleString()}</span>
+      <div class="bg-white rounded-lg shadow card-hover overflow-hidden cursor-pointer" onclick="showProjectDetail('${project.id}')">
+        <div class="p-3">
+          <div class="mb-2 text-center">
+            <span class="category-label category-${categoryRaw}">${category}</span>
+          </div>
+          <h3 class="text-sm font-bold text-gray-900 mb-2 line-clamp-1 text-center">${title}</h3>
+          <p class="text-xs text-gray-600 mb-2 line-clamp-2 text-center">${description || ''}</p>
+          <div class="flex flex-wrap gap-1.5 justify-center">
+            <span class="badge ${badgeClass}" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+              ${fundingType}
+            </span>
+            <span class="amount-badge" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+              $${(project.amount || 0).toLocaleString()}
+            </span>
+            ${videoCount > 0 ? `<span class="badge" style="background:#FF0000; color:white; font-size: 0.75rem; padding: 0.4rem 0.8rem;"><i class="fab fa-youtube mr-1"></i>${videoCount}개 ${t('video_label')}</span>` : ''}
+          </div>
         </div>
       </div>
     `;
@@ -317,13 +346,13 @@ function showProjectDetail(id) {
   let videosHTML = '';
   if (youtubeUrls.length > 0) {
     videosHTML = `
-      <div class="bg-gray-50 rounded-lg p-4 mb-4">
+      <div class="bg-gray-50 rounded-lg p-4">
         <h3 class="text-lg font-bold mb-3 text-center">
           <i class="fab fa-youtube text-red-600 mr-2"></i>${t('video_label')} (${youtubeUrls.length}개)
         </h3>
         <div class="space-y-4 max-w-3xl mx-auto">
           ${youtubeUrls.map((videoId, index) => `
-            <div class="youtube-thumbnail" id="modal-video-${index}" onclick="playVideo('modal-video-${index}', '${videoId}')">
+            <div class="youtube-thumbnail" id="video-${index}" onclick="playVideo('video-${index}', '${videoId}')">
               <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="Video ${index + 1}">
               <div class="play-button"></div>
               <div class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
@@ -337,30 +366,40 @@ function showProjectDetail(id) {
   }
   
   modal.innerHTML = `
-    <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-      <div class="p-6">
-        <div class="flex justify-between items-start mb-4">
+    <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+        <div class="flex-1">
           <h2 class="text-2xl font-bold text-gray-900">${title}</h2>
-          <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">
-            <i class="fas fa-times text-2xl"></i>
-          </button>
+          <p class="text-sm text-gray-500 mt-1">${description || ''}</p>
         </div>
-        
-        <div class="mb-4">
-          <p class="text-gray-700 mb-2">${description}</p>
-          ${textInfo ? `<p class="text-gray-600 text-sm">${textInfo}</p>` : ''}
-        </div>
-        
-        <div class="flex gap-2 mb-4">
-          <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
-            ${fundingType}
+        <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700 ml-4">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-6">
+        <div class="flex flex-wrap gap-2 justify-center">
+          <span class="badge badge-${(project.funding_type || '').includes('투자') || (project.funding_type || '').includes('Investment') || (project.funding_type || '').includes('投资') ? 'investment' : (project.funding_type || '').includes('수익') || (project.funding_type || '').includes('Revenue') || (project.funding_type || '').includes('收益') ? 'revenue' : 'loan'}">
+            <i class="fas fa-tag mr-1"></i>${fundingType}
           </span>
-          <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
-            $${(project.amount || 0).toLocaleString()}
+          <span class="amount-tag">
+            <i class="fas fa-dollar-sign mr-1"></i>$${(project.amount || 0).toLocaleString()}
           </span>
         </div>
         
         ${videosHTML}
+        
+        ${textInfo ? `
+          <div class="bg-white border-2 border-purple-200 rounded-lg p-6">
+            <h3 class="text-xl font-bold mb-4 text-purple-700 text-center">
+              <i class="fas fa-file-alt mr-2"></i>${t('detail_title')}
+            </h3>
+            <div class="text-gray-700 whitespace-pre-wrap leading-relaxed text-center">
+              ${textInfo.split('\n').map(line => 
+                line.trim() ? `<p class="mb-3">${line}</p>` : '<br>'
+              ).join('')}
+            </div>
+          </div>
+        ` : ''}
       </div>
     </div>
   `;
@@ -368,213 +407,238 @@ function showProjectDetail(id) {
   document.body.appendChild(modal);
 }
 
-function playVideo(elementId, videoId) {
-  const element = document.getElementById(elementId);
-  if (!element) return;
-  
-  element.innerHTML = `
-    <iframe 
-      width="100%" 
-      height="100%" 
-      src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-      frameborder="0" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-      allowfullscreen
-      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-    ></iframe>
+function playVideo(containerId, videoId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <div class="relative pb-[56.25%] h-0">
+      <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+        class="absolute top-0 left-0 w-full h-full rounded-lg"
+        frameborder="0" allowfullscreen allow="autoplay"></iframe>
+    </div>
   `;
 }
 
-// Admin page functions
-async function loadAdminProjects() {
+// ADMIN FUNCTIONS
+async function loadProjectsForAdmin() {
   try {
     const response = await axios.get('/api/projects');
     projects = response.data.data || [];
-    
-    const container = document.getElementById('adminProjectsList');
-    container.innerHTML = projects.map(project => {
-      const title = project.title_ko || project.title || 'No Title';
-      return `
-      <div class="bg-white rounded-lg shadow p-4 flex justify-between items-center">
-        <div class="flex-1">
-          <h3 class="font-bold text-gray-900">${title}</h3>
-          <p class="text-sm text-gray-600">${project.category || ''} | ${project.funding_type || ''} | $${(project.amount || 0).toLocaleString()}</p>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="editProject(${project.id})" class="text-blue-600 hover:text-blue-800">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button onclick="deleteProject(${project.id})" class="text-red-600 hover:text-red-800">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    `;
-    }).join('');
   } catch (error) {
-    console.error('Error loading admin projects:', error);
+    console.error('Failed to load projects:', error);
+    projects = [];
   }
 }
 
-function showProjectForm(projectId = null) {
-  editing = projectId ? projects.find(p => p.id == projectId) : null;
+async function renderAdminPanel() {
+  await loadProjectsForAdmin();
   
-  const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-  
-  modal.innerHTML = `
-    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6" onclick="event.stopPropagation()">
-      <h2 class="text-2xl font-bold mb-4">${editing ? t('edit') : t('new_project')}</h2>
-      
-      <form id="projectForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">${t('project_name')} (${t('select')} 한국어|||English|||中文)</label>
-          <textarea id="projectTitle" class="w-full border rounded px-3 py-2" rows="2" required
-            placeholder="예: 혁신적인 모바일 앱|||Innovative mobile app|||创新移动应用">${editing ? (editing.title_ko || editing.title || '') : ''}</textarea>
+  document.getElementById('adminContent').innerHTML = `
+    <header class="bg-white shadow p-4">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-3">
+          <h1 class="text-2xl font-bold"><i class="fas fa-cog text-purple-600 mr-2"></i>${t('admin_title')}</h1>
+          <a href="/" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+            <i class="fas fa-home mr-2"></i>${t('admin_home')}
+          </a>
         </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">${t('description')} (한국어|||English|||中文)</label>
-          <textarea id="projectDescription" class="w-full border rounded px-3 py-2" rows="3"
-            placeholder="예: 최신 기술 기반|||Based on latest tech|||基于最新技术">${editing ? (editing.description_ko || editing.description || '') : ''}</textarea>
-        </div>
-        
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">${t('category')}</label>
-            <select id="projectCategory" class="w-full border rounded px-3 py-2">
-              <option value="의료" ${editing && editing.category === '의료' ? 'selected' : ''}>의료</option>
-              <option value="투자" ${editing && editing.category === '투자' ? 'selected' : ''}>투자</option>
-              <option value="기타" ${editing && editing.category === '기타' ? 'selected' : ''}>기타</option>
-            </select>
+      </div>
+    </header>
+    
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex gap-2 mb-3">
+        <button onclick="showForm()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          <i class="fas fa-plus mr-2"></i>${t('new_project')}
+        </button>
+      </div>
+      <div class="bg-white rounded-xl shadow">
+        <div class="p-6 border-b"><h3 class="text-xl font-bold">${t('registered_projects')} (${projects.length}개)</h3></div>
+        <div>${projects.length ? projects.map(p => `
+          <div class="p-6 border-b hover:bg-gray-50">
+            <div class="flex justify-between">
+              <div class="flex-1">
+                <h4 class="text-lg font-bold mb-2">${p.title}</h4>
+                <p class="text-gray-600 text-sm mb-3">${p.description || ''}</p>
+                <div class="flex gap-2 text-sm flex-wrap">
+                  <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full">${p.funding_type}</span>
+                  <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full font-bold">$${(p.amount||0).toLocaleString()}</span>
+                  ${[p.youtube_url_1, p.youtube_url_2, p.youtube_url_3, p.youtube_url_4, p.youtube_url_5].filter(u => u).length > 0 ? 
+                    `<span class="px-3 py-1 bg-red-100 text-red-800 rounded-full"><i class="fab fa-youtube mr-1"></i>${[p.youtube_url_1, p.youtube_url_2, p.youtube_url_3, p.youtube_url_4, p.youtube_url_5].filter(u => u).length}개</span>` 
+                    : ''}
+                </div>
+              </div>
+              <div class="flex gap-2 ml-4">
+                <button onclick="edit('${p.id}')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"><i class="fas fa-edit"></i></button>
+                <button onclick="del('${p.id}')" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
           </div>
-          
-          <div>
-            <label class="block text-sm font-medium mb-1">${t('funding_type')}</label>
-            <select id="projectFundingType" class="w-full border rounded px-3 py-2">
-              <option value="investment" ${editing && editing.funding_type === 'investment' ? 'selected' : ''}>투자</option>
-              <option value="donation" ${editing && editing.funding_type === 'donation' ? 'selected' : ''}>수익분배</option>
-            </select>
+        `).join('') : '<div class="p-12 text-center text-gray-500"><i class="fas fa-inbox text-6xl mb-4"></i><p>' + t('no_projects') + '</p></div>'}</div>
+      </div>
+    </div>
+
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50" onclick="if(event.target===this) closeForm()">
+      <div class="min-h-screen px-4 py-8 flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6 border-b flex justify-between items-center">
+            <h2 class="text-2xl font-bold" id="formTitle">${t('new_project')}</h2>
+            <button onclick="closeForm()" class="text-gray-500 hover:text-gray-700">
+              <i class="fas fa-times text-2xl"></i>
+            </button>
           </div>
+          <form id="form" class="p-6 space-y-4" onsubmit="save(event)">
+            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+              <p class="text-sm text-blue-800 font-medium mb-2"><i class="fas fa-info-circle mr-1"></i> 다국어 입력 안내</p>
+              <p class="text-xs text-blue-600">한국어, 영어, 중국어 순서로 입력하세요. 구분자: <strong>|||</strong></p>
+              <p class="text-xs text-blue-600 mt-1">예: 한국어제목|||English Title|||中文标题</p>
+            </div>
+            
+            <div><label class="block text-sm font-medium mb-2">${t('project_name')} * (한국어|||English|||中文)</label>
+            <input name="title" required class="w-full border rounded px-4 py-2" placeholder="예: 앱 개발 프로젝트|||App Development Project|||应用开发项目"></div>
+            <div><label class="block text-sm font-medium mb-2">${t('description')} (한국어|||English|||中文)</label>
+            <textarea name="description" rows="2" class="w-full border rounded px-4 py-2" placeholder="예: 혁신적인 모바일 앱|||Innovative mobile app|||创新移动应用"></textarea></div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-sm font-medium mb-2">${t('category')} *</label>
+              <select name="category" required class="w-full border rounded px-4 py-2">
+                <option value="">선택</option>
+                <option value="선택">선택</option>
+                <option value="웹플랫폼">웹플랫폼</option>
+                <option value="O2O">O2O</option>
+                <option value="게임">게임</option>
+                <option value="기타">기타</option>
+              </select></div>
+              <div><label class="block text-sm font-medium mb-2">${t('funding_type')} *</label>
+              <select name="funding_type" required class="w-full border rounded px-4 py-2">
+                <option value="">선택</option>
+                <option value="investment">투자</option>
+                <option value="donation">수익분배</option>
+                <option value="startup">창업희망</option>
+              </select></div>
+              <div class="col-span-2"><label class="block text-sm font-medium mb-2">${t('amount')} *</label>
+              <input type="number" name="amount" required min="0" step="100" class="w-full border rounded px-4 py-2"></div>
+            </div>
+            
+            <div class="border-t pt-4 mt-4">
+              <label class="block text-sm font-medium mb-3">
+                <i class="fab fa-youtube text-red-600 mr-1"></i>${t('youtube_links')}
+              </label>
+              <div class="space-y-2">
+                <input type="url" name="youtube_url_1" placeholder="YouTube 링크 #1" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="youtube_url_2" placeholder="YouTube 링크 #2" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="youtube_url_3" placeholder="YouTube 링크 #3" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="youtube_url_4" placeholder="YouTube 링크 #4" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="youtube_url_5" placeholder="YouTube 링크 #5" class="w-full border rounded px-4 py-2 text-sm">
+              </div>
+            </div>
+            
+            <div><label class="block text-sm font-medium mb-2">${t('text_info')} (한국어|||English|||中文)</label>
+            <textarea name="text_info" rows="5" class="w-full border rounded px-4 py-2" placeholder="예: 프로젝트 설명|||Project description|||项目说明"></textarea></div>
+            
+            <div class="flex gap-3 justify-end pt-4 border-t">
+              <button type="button" onclick="closeForm()" class="px-6 py-2 border rounded">${t('cancel')}</button>
+              <button type="submit" class="px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                <i class="fas fa-save mr-2"></i>${t('save')}
+              </button>
+            </div>
+          </form>
         </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">${t('amount')}</label>
-          <input type="number" id="projectAmount" class="w-full border rounded px-3 py-2" min="0" step="1000"
-            value="${editing ? editing.amount || 0 : 0}">
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-2">${t('youtube_links')}</label>
-          <div class="space-y-2">
-            ${[1, 2, 3, 4, 5].map(i => `
-              <input type="url" id="youtubeUrl${i}" class="w-full border rounded px-3 py-2" 
-                placeholder="${t('youtube_link')} ${i}"
-                value="${editing ? editing[`youtube_url_${i}`] || '' : ''}">
-            `).join('')}
-          </div>
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">${t('text_info')} (한국어|||English|||中文)</label>
-          <textarea id="projectTextInfo" class="w-full border rounded px-3 py-2" rows="2"
-            placeholder="예: 추가 정보|||Additional info|||附加信息">${editing ? (editing.text_info_ko || editing.text_info || '') : ''}</textarea>
-        </div>
-        
-        <div class="flex gap-2 justify-end">
-          <button type="button" onclick="this.closest('.fixed').remove()" 
-            class="px-4 py-2 border rounded hover:bg-gray-100">${t('cancel')}</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">${t('save')}</button>
-        </div>
-      </form>
+      </div>
     </div>
   `;
-  
-  document.body.appendChild(modal);
-  
-  document.getElementById('projectForm').onsubmit = async (e) => {
-    e.preventDefault();
-    await saveProject();
-    modal.remove();
-  };
 }
 
-async function saveProject() {
-  const title = document.getElementById('projectTitle').value.trim();
-  const description = document.getElementById('projectDescription').value.trim();
-  const category = document.getElementById('projectCategory').value;
-  const fundingType = document.getElementById('projectFundingType').value;
-  const amount = parseInt(document.getElementById('projectAmount').value) || 0;
-  const textInfo = document.getElementById('projectTextInfo').value.trim();
+function showForm() {
+  editing = null;
+  document.getElementById('formTitle').textContent = t('new_project');
+  document.getElementById('form').reset();
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function closeForm() {
+  document.getElementById('modal').classList.add('hidden');
+  editing = null;
+}
+
+async function save(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = {};
   
-  // Parse multilingual fields
-  const [title_ko, title_en, title_zh] = title.includes('|||') ? title.split('|||').map(s => s.trim()) : [title, title, title];
-  const [desc_ko, desc_en, desc_zh] = description.includes('|||') ? description.split('|||').map(s => s.trim()) : [description, description, description];
-  const [text_ko, text_en, text_zh] = textInfo.includes('|||') ? textInfo.split('|||').map(s => s.trim()) : [textInfo, textInfo, textInfo];
-  
-  const data = {
-    title: title_ko,
-    title_ko, title_en, title_zh,
-    description: desc_ko,
-    description_ko: desc_ko, description_en: desc_en, description_zh: desc_zh,
-    category,
-    funding_type: fundingType,
-    amount,
-    youtube_url_1: document.getElementById('youtubeUrl1').value.trim(),
-    youtube_url_2: document.getElementById('youtubeUrl2').value.trim(),
-    youtube_url_3: document.getElementById('youtubeUrl3').value.trim(),
-    youtube_url_4: document.getElementById('youtubeUrl4').value.trim(),
-    youtube_url_5: document.getElementById('youtubeUrl5').value.trim(),
-    text_info: text_ko,
-    text_info_ko: text_ko, text_info_en: text_en, text_info_zh: text_zh
-  };
+  // Process multilingual fields
+  for (const [key, value] of formData.entries()) {
+    if (key === 'title' || key === 'description' || key === 'text_info') {
+      const parts = value.split('|||').map(s => s.trim());
+      data[key] = parts[0] || value;
+      data[`${key}_ko`] = parts[0] || value;
+      data[`${key}_en`] = parts[1] || parts[0] || value;
+      data[`${key}_zh`] = parts[2] || parts[0] || value;
+    } else {
+      data[key] = value || null;
+    }
+  }
   
   try {
     if (editing) {
-      await axios.put(`/api/projects/${editing.id}`, data);
+      await axios.put(`/api/projects/${editing}`, data);
       alert(t('success_updated'));
     } else {
       await axios.post('/api/projects', data);
       alert(t('success_added'));
     }
-    loadAdminProjects();
+    
+    closeForm();
+    await renderAdminPanel();
   } catch (error) {
-    console.error('Error saving project:', error);
-    alert(t('error_save') + (error.response?.data?.message || error.message));
+    console.error('저장 오류:', error);
+    alert(t('error_save') + error.message);
   }
 }
 
-function editProject(id) {
-  showProjectForm(id);
+async function edit(id) {
+  editing = id;
+  const project = projects.find(p => p.id == id);
+  document.getElementById('formTitle').textContent = t('edit');
+  const form = document.getElementById('form');
+  
+  // Restore multilingual fields
+  Object.keys(project).forEach(k => {
+    if (k === 'title' || k === 'description' || k === 'text_info') {
+      const ko = project[`${k}_ko`] || project[k] || '';
+      const en = project[`${k}_en`] || project[k] || '';
+      const zh = project[`${k}_zh`] || project[k] || '';
+      if (form.elements[k]) {
+        form.elements[k].value = `${ko}|||${en}|||${zh}`;
+      }
+    } else if (!k.endsWith('_ko') && !k.endsWith('_en') && !k.endsWith('_zh') && !k.includes('created_at')) {
+      if (form.elements[k]) form.elements[k].value = project[k] || '';
+    }
+  });
+  
+  document.getElementById('modal').classList.remove('hidden');
 }
 
-async function deleteProject(id) {
+async function del(id) {
   if (!confirm(t('confirm_delete'))) return;
   
   try {
     await axios.delete(`/api/projects/${id}`);
     alert(t('success_deleted'));
-    loadAdminProjects();
+    await renderAdminPanel();
   } catch (error) {
-    console.error('Error deleting project:', error);
+    console.error('삭제 오류:', error);
     alert(t('error_delete'));
   }
 }
 
-// Router for SPA
 function loadPage() {
-  const hash = window.location.hash.slice(1) || '/';
-  const mainPage = document.getElementById('mainPage');
-  const adminPage = document.getElementById('adminPage');
-  
-  if (hash === '/admin') {
-    mainPage.style.display = 'none';
-    adminPage.style.display = 'block';
-    loadAdminProjects();
+  const hash = window.location.hash;
+  if (hash === '#/admin' || hash === '#admin') {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+    renderAdminPanel();
   } else {
-    mainPage.style.display = 'block';
-    adminPage.style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    document.getElementById('adminContent').style.display = 'none';
     loadProjects();
   }
 }

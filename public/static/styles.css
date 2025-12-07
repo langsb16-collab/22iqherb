@@ -21,10 +21,36 @@
 }
 
 .category-label {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
+  color: white;
+  text-align: center;
+}
+
+/* Category Colors */
+.category-선택 {
+  background-color: #6B7280;
+}
+
+.category-웹플랫폼 {
+  background-color: #3B82F6;
+}
+
+.category-O2O {
+  background-color: #8B5CF6;
+}
+
+.category-게임 {
+  background-color: #F59E0B;
+}
+
+.category-기타 {
+  background-color: #06B6D4;
 }
 
 .project-card-body {
@@ -57,6 +83,7 @@
 .badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   padding: 8px 15px;
   border-radius: 20px;
@@ -64,31 +91,34 @@
   font-weight: 600;
   white-space: nowrap;
   color: white;
+  text-align: center;
 }
 
 .badge-investment {
-  background-color: #ef4444;
+  background-color: #EF4444;
 }
 
 .badge-donation {
-  background-color: #fbbf24;
+  background-color: #10B981;
 }
 
-.badge-orange {
-  background-color: #F0AD4E;
+.badge-startup {
+  background-color: #EC4899;
 }
 
-/* Amount Badge - Yellow */
+/* Amount Badge - Gold */
 .amount-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 8px 15px;
   border-radius: 20px;
-  background-color: #fbbf24;
+  background-color: #D97706;
   color: white;
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
+  text-align: center;
 }
 
 /* Grid Layout */

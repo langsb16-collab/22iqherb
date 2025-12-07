@@ -12,7 +12,12 @@ const app = new Hono<{ Bindings: Bindings }>()
 app.use('/api/*', cors())
 
 // Serve static files
-app.use('/static/*', serveStatic({ root: './public' }))
+app.use('/static/*', serveStatic({ 
+  root: './public',
+  onNotFound: (path, c) => {
+    console.log(`File not found: ${path}`)
+  }
+}))
 
 // API Routes for Projects
 // Get all projects
@@ -123,7 +128,8 @@ app.get('/', (c) => {
           .badge-investment { background-color: #EF4444; color: white; }
           .badge-revenue { background-color: #10B981; color: white; }
           .badge-loan { background-color: #F59E0B; color: white; }
-          .amount-tag { display: inline-flex; align-items: center; justify-content: center; background-color: #FCD34D; color: #92400E; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 700; }
+          .amount-tag { display: inline-flex; align-items: center; justify-content: center; background-color: #D97706 !important; color: white !important; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 700; }
+          .amount-badge { display: inline-flex; align-items: center; justify-content: center; background-color: #D97706 !important; color: white !important; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; }
           .lang-btn { 
             cursor: pointer; 
             padding: 0.375rem 0.625rem; 
@@ -268,7 +274,7 @@ app.get('/', (c) => {
         <div id="adminContent" style="display:none;"></div>
 
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-        <script src="/static/app.js"></script>
+        <script src="/static/app.js?v=${Date.now()}"></script>
     </body>
     </html>
   `)
