@@ -17,13 +17,17 @@
 ## 🌐 URL
 
 ### 프로덕션 (Cloudflare Pages)
+- **메인 도메인**: https://iqcash.me ⭐ (NEW!)
+- **관리자 페이지**: https://iqcash.me/#/admin
+- **Cloudflare Pages**: https://22iqherb.pages.dev
+- **최신 배포**: https://f81b1212.22iqherb.pages.dev
+- **GitHub**: https://github.com/langsb16-collab/22iqherb
+
+### 기존 프로덕션 (iqherb.org)
 - **메인 페이지**: https://iqherb.org
 - **관리자 페이지**: https://iqherb.org/#/admin
-- **최신 배포**: https://68b4e0ca.iqherb.pages.dev
-- **GitHub**: https://github.com/langsb16-collab/-iqherb
 
 ### 개발 환경 (Sandbox)
-- **앱 URL**: https://3000-i9crqm43nfb3kkn3ut1sl-2e77fc33.sandbox.novita.ai
 - **로컬 개발 서버**: http://localhost:3000
 
 ### API 엔드포인트
@@ -116,7 +120,14 @@ CREATE TABLE projects (
 **Cloudflare Pages** - Edge에서 실행되는 초고속 웹 애플리케이션
 
 ### 배포 상태
-✅ **Active** - https://iqherb.org
+✅ **Active** - https://iqcash.me (메인 도메인)
+✅ **Active** - https://iqherb.org (기존 도메인)
+✅ **Active** - https://22iqherb.pages.dev (Cloudflare Pages)
+
+### 프로젝트 정보
+- **Cloudflare Project**: 22iqherb
+- **GitHub Repository**: langsb16-collab/22iqherb
+- **Production Branch**: main
 
 ### 기술 스택
 - **프레임워크**: Hono v4.10.7
@@ -128,7 +139,7 @@ CREATE TABLE projects (
 - **배포 도구**: Wrangler v4.53.0
 
 ### 마지막 업데이트
-**2025-12-07** - 기존 11개 프로젝트 복구 완료
+**2025-12-09** - iqcash.me 커스텀 도메인 연결 완료
 
 ## 📊 현재 등록된 프로젝트 (11개)
 
