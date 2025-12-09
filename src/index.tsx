@@ -261,10 +261,15 @@ app.get('/', (c) => {
             </div>
         </section>
 
-        <footer class="bg-gray-800 text-white py-1 mt-6">
+        <footer class="bg-gray-800 text-white py-3 mt-6">
             <div class="max-w-7xl mx-auto px-2 sm:px-4">
-                <div class="flex flex-col items-center">
-                    <p class="text-[9px] sm:text-xs text-gray-400">© 2024 OpenFunding IT Hub. All rights reserved.</p>
+                <div class="flex flex-col items-center text-center space-y-0.5">
+                    <p class="text-[10px] sm:text-xs text-gray-300 leading-relaxed">
+                        아이큐.허브(IQ.HERB) &nbsp;|&nbsp; 534-64-00747
+                    </p>
+                    <p class="text-[9px] sm:text-[11px] text-gray-400 leading-relaxed">
+                        서울특별시 광진구 뚝섬로31길 59(자양동) 대표 정천명
+                    </p>
                 </div>
             </div>
         </footer>
