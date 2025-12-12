@@ -263,12 +263,12 @@ app.get('/', (c) => {
 
         <footer class="bg-gray-800 text-white py-3 mt-6">
             <div class="max-w-7xl mx-auto px-2 sm:px-4">
-                <div class="flex flex-col items-center text-center space-y-0.5">
+                <div class="flex flex-col items-center text-center space-y-1">
                     <p class="text-[10px] sm:text-xs text-gray-300 leading-relaxed">
-                        캐쉬 아이큐(CASH IQ) &nbsp;|&nbsp; 대표:박용근
+                        개발,제작문의. 투자, 수익분배 제휴, IT 29년차
                     </p>
                     <p class="text-[9px] sm:text-[11px] text-gray-400 leading-relaxed">
-                        서울특별시 강남구 테헤란로28길 15, 614호(대치동)
+                        locks88@naver.com &nbsp;|&nbsp; 텔레그램 @HERB4989 &nbsp;|&nbsp; 위쳇 wxid_ue2lqlnqyfd422
                     </p>
                 </div>
             </div>
