@@ -45,13 +45,15 @@ app.post('/api/projects', async (c) => {
         description, description_ko, description_en, description_zh,
         category, funding_type, amount,
         youtube_url_1, youtube_url_2, youtube_url_3, youtube_url_4, youtube_url_5,
+        image_url_1, image_url_2, image_url_3, image_url_4, image_url_5,
         text_info, text_info_ko, text_info_en, text_info_zh
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       data.title, data.title_ko, data.title_en, data.title_zh,
       data.description, data.description_ko, data.description_en, data.description_zh,
       data.category, data.funding_type, data.amount,
       data.youtube_url_1, data.youtube_url_2, data.youtube_url_3, data.youtube_url_4, data.youtube_url_5,
+      data.image_url_1, data.image_url_2, data.image_url_3, data.image_url_4, data.image_url_5,
       data.text_info, data.text_info_ko, data.text_info_en, data.text_info_zh
     ).run();
     
@@ -74,6 +76,7 @@ app.put('/api/projects/:id', async (c) => {
         description = ?, description_ko = ?, description_en = ?, description_zh = ?,
         category = ?, funding_type = ?, amount = ?,
         youtube_url_1 = ?, youtube_url_2 = ?, youtube_url_3 = ?, youtube_url_4 = ?, youtube_url_5 = ?,
+        image_url_1 = ?, image_url_2 = ?, image_url_3 = ?, image_url_4 = ?, image_url_5 = ?,
         text_info = ?, text_info_ko = ?, text_info_en = ?, text_info_zh = ?
       WHERE id = ?
     `).bind(
@@ -81,6 +84,7 @@ app.put('/api/projects/:id', async (c) => {
       data.description, data.description_ko, data.description_en, data.description_zh,
       data.category, data.funding_type, data.amount,
       data.youtube_url_1, data.youtube_url_2, data.youtube_url_3, data.youtube_url_4, data.youtube_url_5,
+      data.image_url_1, data.image_url_2, data.image_url_3, data.image_url_4, data.image_url_5,
       data.text_info, data.text_info_ko, data.text_info_en, data.text_info_zh,
       id
     ).run();

@@ -342,6 +342,37 @@ function showProjectDetail(id) {
   modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
   modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
   
+  // Get all Image URLs
+  const imageUrls = [
+    project.image_url_1,
+    project.image_url_2,
+    project.image_url_3,
+    project.image_url_4,
+    project.image_url_5
+  ].filter(url => url && url.trim());
+  
+  // Images section HTML
+  let imagesHTML = '';
+  if (imageUrls.length > 0) {
+    imagesHTML = `
+      <div class="bg-blue-50 rounded-lg p-4">
+        <h3 class="text-lg font-bold mb-3 text-center">
+          <i class="fas fa-images text-blue-600 mr-2"></i>프로젝트 이미지 (${imageUrls.length}개)
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          ${imageUrls.map((url, index) => `
+            <div class="relative group cursor-pointer" onclick="window.open('${url}', '_blank')">
+              <img src="${url}" alt="Image ${index + 1}" class="w-full h-auto rounded-lg shadow-md hover:shadow-xl transition-shadow">
+              <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity rounded-lg flex items-center justify-center">
+                <i class="fas fa-search-plus text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
   // Videos section HTML - vertical layout for 2-5 videos
   let videosHTML = '';
   if (youtubeUrls.length > 0) {
@@ -385,6 +416,8 @@ function showProjectDetail(id) {
             <i class="fas fa-dollar-sign mr-1"></i>$${(project.amount || 0).toLocaleString()}
           </span>
         </div>
+        
+        ${imagesHTML}
         
         ${videosHTML}
         
@@ -528,6 +561,24 @@ async function renderAdminPanel() {
                 <input type="url" name="youtube_url_3" placeholder="YouTube 링크 #3" class="w-full border rounded px-4 py-2 text-sm">
                 <input type="url" name="youtube_url_4" placeholder="YouTube 링크 #4" class="w-full border rounded px-4 py-2 text-sm">
                 <input type="url" name="youtube_url_5" placeholder="YouTube 링크 #5" class="w-full border rounded px-4 py-2 text-sm">
+              </div>
+            </div>
+            
+            <div class="border-t pt-4 mt-4">
+              <label class="block text-sm font-medium mb-3">
+                <i class="fas fa-images text-blue-600 mr-1"></i>이미지 URL (최대 5개)
+              </label>
+              <div class="bg-yellow-50 p-3 rounded-lg mb-3">
+                <p class="text-xs text-yellow-800 font-medium mb-1"><i class="fas fa-info-circle mr-1"></i> 이미지 업로드 안내</p>
+                <p class="text-xs text-yellow-700">PC에서: 이미지를 업로드한 후 URL을 복사하여 입력하세요</p>
+                <p class="text-xs text-yellow-700">권장 사이트: imgur.com, postimages.org</p>
+              </div>
+              <div class="space-y-2">
+                <input type="url" name="image_url_1" placeholder="이미지 URL #1 (예: https://i.imgur.com/abc123.jpg)" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="image_url_2" placeholder="이미지 URL #2" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="image_url_3" placeholder="이미지 URL #3" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="image_url_4" placeholder="이미지 URL #4" class="w-full border rounded px-4 py-2 text-sm">
+                <input type="url" name="image_url_5" placeholder="이미지 URL #5" class="w-full border rounded px-4 py-2 text-sm">
               </div>
             </div>
             
