@@ -939,8 +939,20 @@ function updateFooter() {
   }
 }
 
-window.addEventListener('hashchange', loadPage);
-window.addEventListener('load', () => {
+// Ensure DOM is fully loaded before executing
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔧 DOM fully loaded');
+    updateFooter();
+    loadPage();
+  });
+} else {
+  console.log('🔧 DOM already loaded');
   updateFooter();
+  loadPage();
+}
+
+window.addEventListener('hashchange', () => {
+  console.log('🔧 Hash changed:', window.location.hash);
   loadPage();
 });
