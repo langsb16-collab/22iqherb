@@ -126,6 +126,17 @@ app.get('/', (c) => {
         <link rel="manifest" href="/manifest.json">
         <title>OpenFunding IT Hub</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+          tailwind.config = {
+            theme: {
+              extend: {
+                fontFamily: {
+                  sans: ['Noto Sans KR', 'system-ui', '-apple-system', 'sans-serif']
+                }
+              }
+            }
+          }
+        </script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         <style>
           body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
