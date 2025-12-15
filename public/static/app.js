@@ -867,5 +867,57 @@ function loadPage() {
   }
 }
 
+// Update footer based on domain
+function updateFooter() {
+  const hostname = window.location.hostname;
+  const footer = document.getElementById('mainFooter');
+  
+  if (!footer) return;
+  
+  // iqherb.org only: show company info with QR code
+  if (hostname === 'iqherb.org' || hostname.includes('iqherb.pages.dev')) {
+    footer.innerHTML = `
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-gray-700 rounded-lg p-4 max-w-md mx-auto border border-gray-600">
+          <div class="flex items-center gap-4">
+            <div class="flex-shrink-0">
+              <img src="/static/wechat-qr.png" alt="WeChat QR" class="w-20 h-20 rounded border-2 border-gray-500">
+            </div>
+            <div class="flex-1 text-left">
+              <h3 class="text-white font-bold text-sm mb-1">延世互联信息技术有限公司</h3>
+              <p class="text-gray-300 text-xs mb-1">연세호련정보기술유한공사</p>
+              <p class="text-gray-400 text-xs flex items-center gap-1">
+                <i class="fas fa-phone"></i>
+                <span>13943377770</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-3">
+          <p class="text-gray-400 text-xs">© 2024 OpenFunding IT Hub. All rights reserved.</p>
+        </div>
+      </div>
+    `;
+  }
+  // tourit.run and iqcash.me: keep contact info version
+  else {
+    footer.innerHTML = `
+      <div class="max-w-7xl mx-auto px-2 sm:px-4">
+        <div class="flex flex-col items-center text-center space-y-1">
+          <p class="text-[10px] sm:text-xs text-gray-300 leading-relaxed">
+            개발,제작문의. 투자, 수익분배 제휴, IT 29년차
+          </p>
+          <p class="text-[9px] sm:text-[11px] text-gray-400 leading-relaxed">
+            locks88@naver.com &nbsp;|&nbsp; 텔레그램 @HERB4989 &nbsp;|&nbsp; 위쳇 wxid_ue2lqlnqyfd422
+          </p>
+        </div>
+      </div>
+    `;
+  }
+}
+
 window.addEventListener('hashchange', loadPage);
-window.addEventListener('load', loadPage);
+window.addEventListener('load', () => {
+  updateFooter();
+  loadPage();
+});

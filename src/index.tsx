@@ -265,7 +265,7 @@ app.get('/', (c) => {
             </div>
         </section>
 
-        <footer class="bg-gray-800 text-white py-3 mt-6">
+        <footer id="mainFooter" class="bg-gray-800 text-white py-3 mt-6">
             <div class="max-w-7xl mx-auto px-2 sm:px-4">
                 <div class="flex flex-col items-center text-center space-y-1">
                     <p class="text-[10px] sm:text-xs text-gray-300 leading-relaxed">
