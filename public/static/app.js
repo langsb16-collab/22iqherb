@@ -874,7 +874,7 @@ function updateFooter() {
   
   if (!footer) return;
   
-  // iqherb.org only: show company info with QR code
+  // iqherb.org: show company info with QR code
   if (hostname === 'iqherb.org' || hostname.includes('iqherb.pages.dev')) {
     footer.innerHTML = `
       <div class="max-w-7xl mx-auto px-4">
@@ -899,7 +899,22 @@ function updateFooter() {
       </div>
     `;
   }
-  // tourit.run and iqcash.me: keep contact info version
+  // iqcash.me: show business info
+  else if (hostname === 'iqcash.me' || hostname.includes('22iqherb.pages.dev')) {
+    footer.innerHTML = `
+      <div class="max-w-7xl mx-auto px-2 sm:px-4">
+        <div class="flex flex-col items-center text-center space-y-1">
+          <p class="text-[10px] sm:text-xs text-gray-300 leading-relaxed">
+            아이큐.허브(IQ.HERB) | 534-64-00747
+          </p>
+          <p class="text-[9px] sm:text-[11px] text-gray-400 leading-relaxed">
+            서울특별시 광진구 뚝섬로31길 59(자양동) 대표 정천명
+          </p>
+        </div>
+      </div>
+    `;
+  }
+  // tourit.run: keep contact info version
   else {
     footer.innerHTML = `
       <div class="max-w-7xl mx-auto px-2 sm:px-4">
