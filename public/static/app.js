@@ -566,19 +566,88 @@ async function renderAdminPanel() {
             
             <div class="border-t pt-4 mt-4">
               <label class="block text-sm font-medium mb-3">
-                <i class="fas fa-images text-blue-600 mr-1"></i>이미지 URL (최대 5개)
+                <i class="fas fa-images text-blue-600 mr-1"></i>이미지 업로드 (최대 5개)
               </label>
-              <div class="bg-yellow-50 p-3 rounded-lg mb-3">
-                <p class="text-xs text-yellow-800 font-medium mb-1"><i class="fas fa-info-circle mr-1"></i> 이미지 업로드 안내</p>
-                <p class="text-xs text-yellow-700">PC에서: 이미지를 업로드한 후 URL을 복사하여 입력하세요</p>
-                <p class="text-xs text-yellow-700">권장 사이트: imgur.com, postimages.org</p>
+              <div class="bg-blue-50 p-3 rounded-lg mb-3">
+                <p class="text-xs text-blue-800 font-medium mb-1"><i class="fas fa-info-circle mr-1"></i> PC에서 이미지 업로드</p>
+                <p class="text-xs text-blue-700">JPG, PNG, GIF 파일 지원 (최대 2MB/파일)</p>
               </div>
-              <div class="space-y-2">
-                <input type="url" name="image_url_1" placeholder="이미지 URL #1 (예: https://i.imgur.com/abc123.jpg)" class="w-full border rounded px-4 py-2 text-sm">
-                <input type="url" name="image_url_2" placeholder="이미지 URL #2" class="w-full border rounded px-4 py-2 text-sm">
-                <input type="url" name="image_url_3" placeholder="이미지 URL #3" class="w-full border rounded px-4 py-2 text-sm">
-                <input type="url" name="image_url_4" placeholder="이미지 URL #4" class="w-full border rounded px-4 py-2 text-sm">
-                <input type="url" name="image_url_5" placeholder="이미지 URL #5" class="w-full border rounded px-4 py-2 text-sm">
+              <div class="space-y-3" id="imageUploads">
+                <div class="image-upload-item">
+                  <input type="file" name="image_file_1" accept="image/*" onchange="handleImageUpload(event, 1)" class="hidden" id="imageFile1">
+                  <input type="hidden" name="image_url_1" id="imageUrl1">
+                  <div class="flex gap-2">
+                    <button type="button" onclick="document.getElementById('imageFile1').click()" class="flex-1 px-4 py-2 border-2 border-dashed border-blue-300 rounded hover:border-blue-500 hover:bg-blue-50 text-sm text-blue-600">
+                      <i class="fas fa-upload mr-2"></i>이미지 #1 선택
+                    </button>
+                    <button type="button" onclick="clearImage(1)" class="px-3 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  <div id="imagePreview1" class="mt-2 hidden">
+                    <img src="" alt="Preview 1" class="w-full h-32 object-cover rounded border">
+                  </div>
+                </div>
+                <div class="image-upload-item">
+                  <input type="file" name="image_file_2" accept="image/*" onchange="handleImageUpload(event, 2)" class="hidden" id="imageFile2">
+                  <input type="hidden" name="image_url_2" id="imageUrl2">
+                  <div class="flex gap-2">
+                    <button type="button" onclick="document.getElementById('imageFile2').click()" class="flex-1 px-4 py-2 border-2 border-dashed border-blue-300 rounded hover:border-blue-500 hover:bg-blue-50 text-sm text-blue-600">
+                      <i class="fas fa-upload mr-2"></i>이미지 #2 선택
+                    </button>
+                    <button type="button" onclick="clearImage(2)" class="px-3 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  <div id="imagePreview2" class="mt-2 hidden">
+                    <img src="" alt="Preview 2" class="w-full h-32 object-cover rounded border">
+                  </div>
+                </div>
+                <div class="image-upload-item">
+                  <input type="file" name="image_file_3" accept="image/*" onchange="handleImageUpload(event, 3)" class="hidden" id="imageFile3">
+                  <input type="hidden" name="image_url_3" id="imageUrl3">
+                  <div class="flex gap-2">
+                    <button type="button" onclick="document.getElementById('imageFile3').click()" class="flex-1 px-4 py-2 border-2 border-dashed border-blue-300 rounded hover:border-blue-500 hover:bg-blue-50 text-sm text-blue-600">
+                      <i class="fas fa-upload mr-2"></i>이미지 #3 선택
+                    </button>
+                    <button type="button" onclick="clearImage(3)" class="px-3 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  <div id="imagePreview3" class="mt-2 hidden">
+                    <img src="" alt="Preview 3" class="w-full h-32 object-cover rounded border">
+                  </div>
+                </div>
+                <div class="image-upload-item">
+                  <input type="file" name="image_file_4" accept="image/*" onchange="handleImageUpload(event, 4)" class="hidden" id="imageFile4">
+                  <input type="hidden" name="image_url_4" id="imageUrl4">
+                  <div class="flex gap-2">
+                    <button type="button" onclick="document.getElementById('imageFile4').click()" class="flex-1 px-4 py-2 border-2 border-dashed border-blue-300 rounded hover:border-blue-500 hover:bg-blue-50 text-sm text-blue-600">
+                      <i class="fas fa-upload mr-2"></i>이미지 #4 선택
+                    </button>
+                    <button type="button" onclick="clearImage(4)" class="px-3 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  <div id="imagePreview4" class="mt-2 hidden">
+                    <img src="" alt="Preview 4" class="w-full h-32 object-cover rounded border">
+                  </div>
+                </div>
+                <div class="image-upload-item">
+                  <input type="file" name="image_file_5" accept="image/*" onchange="handleImageUpload(event, 5)" class="hidden" id="imageFile5">
+                  <input type="hidden" name="image_url_5" id="imageUrl5">
+                  <div class="flex gap-2">
+                    <button type="button" onclick="document.getElementById('imageFile5').click()" class="flex-1 px-4 py-2 border-2 border-dashed border-blue-300 rounded hover:border-blue-500 hover:bg-blue-50 text-sm text-blue-600">
+                      <i class="fas fa-upload mr-2"></i>이미지 #5 선택
+                    </button>
+                    <button type="button" onclick="clearImage(5)" class="px-3 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  <div id="imagePreview5" class="mt-2 hidden">
+                    <img src="" alt="Preview 5" class="w-full h-32 object-cover rounded border">
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -665,6 +734,24 @@ async function edit(id) {
     }
   });
   
+  // Restore image previews
+  for (let i = 1; i <= 5; i++) {
+    const imageUrl = project[`image_url_${i}`];
+    if (imageUrl) {
+      document.getElementById(`imageUrl${i}`).value = imageUrl;
+      const preview = document.getElementById(`imagePreview${i}`);
+      preview.querySelector('img').src = imageUrl;
+      preview.classList.remove('hidden');
+      
+      const button = document.querySelector(`button[onclick*="imageFile${i}"]`);
+      if (button) {
+        button.innerHTML = `<i class="fas fa-check-circle mr-2"></i>이미지 #${i} 업로드 완료`;
+        button.classList.remove('border-blue-300', 'text-blue-600');
+        button.classList.add('border-green-500', 'text-green-600', 'bg-green-50');
+      }
+    }
+  }
+  
   document.getElementById('modal').classList.remove('hidden');
 }
 
@@ -678,6 +765,72 @@ async function del(id) {
   } catch (error) {
     console.error('삭제 오류:', error);
     alert(t('error_delete'));
+  }
+}
+
+// Image upload handling
+function handleImageUpload(event, index) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  // Check file size (2MB max)
+  if (file.size > 2 * 1024 * 1024) {
+    alert('파일 크기는 2MB 이하여야 합니다.');
+    event.target.value = '';
+    return;
+  }
+  
+  // Check file type
+  if (!file.type.startsWith('image/')) {
+    alert('이미지 파일만 업로드 가능합니다.');
+    event.target.value = '';
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    
+    // Store data URL in hidden input
+    document.getElementById(`imageUrl${index}`).value = dataUrl;
+    
+    // Show preview
+    const preview = document.getElementById(`imagePreview${index}`);
+    preview.querySelector('img').src = dataUrl;
+    preview.classList.remove('hidden');
+    
+    // Update button text
+    const button = event.target.parentElement.querySelector('button');
+    button.innerHTML = `<i class="fas fa-check-circle mr-2"></i>이미지 #${index} 업로드 완료`;
+    button.classList.remove('border-blue-300', 'text-blue-600');
+    button.classList.add('border-green-500', 'text-green-600', 'bg-green-50');
+  };
+  
+  reader.readAsDataURL(file);
+}
+
+function clearImage(index) {
+  // Clear file input
+  const fileInput = document.getElementById(`imageFile${index}`);
+  if (fileInput) fileInput.value = '';
+  
+  // Clear hidden input
+  const urlInput = document.getElementById(`imageUrl${index}`);
+  if (urlInput) urlInput.value = '';
+  
+  // Hide preview
+  const preview = document.getElementById(`imagePreview${index}`);
+  if (preview) {
+    preview.classList.add('hidden');
+    preview.querySelector('img').src = '';
+  }
+  
+  // Reset button
+  const button = fileInput.parentElement.querySelector('button[onclick*="click"]');
+  if (button) {
+    button.innerHTML = `<i class="fas fa-upload mr-2"></i>이미지 #${index} 선택`;
+    button.classList.remove('border-green-500', 'text-green-600', 'bg-green-50');
+    button.classList.add('border-blue-300', 'text-blue-600');
   }
 }
 
