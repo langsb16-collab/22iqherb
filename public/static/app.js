@@ -239,9 +239,17 @@ async function loadProjects() {
   const loading = document.getElementById('loadingIndicator');
   const empty = document.getElementById('emptyState');
 
+  // Check if elements exist (they won't exist on admin page)
+  if (!container || !loading || !empty) {
+    console.warn('⚠️ Project container elements not found - skipping loadProjects');
+    return;
+  }
+
   try {
     const response = await axios.get('/api/projects');
     projects = response.data.data || [];
+    
+    console.log('✅ Loaded projects:', projects.length);
     
     loading.style.display = 'none';
     
@@ -299,9 +307,9 @@ async function loadProjects() {
     `;
     }).join('');
   } catch (error) {
-    console.error('Error loading projects:', error);
-    loading.style.display = 'none';
-    empty.classList.remove('hidden');
+    console.error('❌ Error loading projects:', error);
+    if (loading) loading.style.display = 'none';
+    if (empty) empty.classList.remove('hidden');
   }
 }
 
@@ -469,7 +477,15 @@ async function loadProjectsForAdmin() {
 async function renderAdminPanel() {
   await loadProjectsForAdmin();
   
-  document.getElementById('adminContent').innerHTML = `
+  const adminContent = document.getElementById('adminContent');
+  if (!adminContent) {
+    console.error('❌ adminContent element not found');
+    return;
+  }
+  
+  console.log('✅ Rendering admin panel with', projects.length, 'projects');
+  
+  adminContent.innerHTML = `
     <header class="bg-white shadow p-4">
       <div class="max-w-7xl mx-auto">
         <div class="flex justify-between items-center mb-3">
