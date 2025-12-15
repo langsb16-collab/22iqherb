@@ -250,15 +250,19 @@ async function loadProjects() {
     projects = response.data.data || [];
     
     console.log('✅ Loaded projects:', projects.length);
+    console.log('🔧 Container:', container);
+    console.log('🔧 Loading element:', loading);
     
     loading.style.display = 'none';
+    console.log('✅ Loading hidden');
     
     if (projects.length === 0) {
       empty.classList.remove('hidden');
       return;
     }
 
-    container.innerHTML = projects.map(project => {
+    console.log('🔧 Building HTML for', projects.length, 'projects');
+    const html = projects.map(project => {
       // Count YouTube videos
       const youtubeUrls = [
         project.youtube_url_1,
@@ -306,6 +310,10 @@ async function loadProjects() {
       </div>
     `;
     }).join('');
+    
+    console.log('🔧 HTML length:', html.length);
+    container.innerHTML = html;
+    console.log('✅ Projects rendered to container');
   } catch (error) {
     console.error('❌ Error loading projects:', error);
     if (loading) loading.style.display = 'none';
